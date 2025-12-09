@@ -1,0 +1,597 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+% ====== COLORES ======
+\definecolor{ossiel}{RGB}{70,130,180}
+\definecolor{aneli}{RGB}{220,20,60}
+\definecolor{ramon}{RGB}{34,139,34}
+\definecolor{cristian}{RGB}{255,140,0}
+\definecolor{nota}{RGB}{100,100,100}
+
+% ====== CAJAS DE DIALOGO ======
+\newtcolorbox{ossielbox}{
+  colback=ossiel!10,
+  colframe=ossiel!80,
+  fonttitle=\bfseries,
+  title=OSSIEL dice:,
+  boxrule=1pt,
+  arc=3pt
+}
+
+\newtcolorbox{anelibox}{
+  colback=aneli!10,
+  colframe=aneli!80,
+  fonttitle=\bfseries,
+  title=ANELI dice:,
+  boxrule=1pt,
+  arc=3pt
+}
+
+\newtcolorbox{ramonbox}{
+  colback=ramon!10,
+  colframe=ramon!80,
+  fonttitle=\bfseries,
+  title=RAM\'ON dice:,
+  boxrule=1pt,
+  arc=3pt
+}
+
+\newtcolorbox{cristianbox}{
+  colback=cristian!10,
+  colframe=cristian!80,
+  fonttitle=\bfseries,
+  title=CRISTIAN dice:,
+  boxrule=1pt,
+  arc=3pt
+}
+
+\newtcolorbox{notabox}{
+  colback=nota!10,
+  colframe=nota!50,
+  fonttitle=\bfseries,
+  title=NOTA:,
+  boxrule=0.5pt,
+  arc=2pt
+}
+
+% ====== FORMATO DE TITULOS ======
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{black}}
+  {\thesection}{1em}{}[\titlerule]
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries}
+  {\thesubsection}{1em}{}
+
+% ====== ENCABEZADO Y PIE ======
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textit{Guion de Presentacion}}
+\fancyhead[R]{\textit{Sistema de Siembra Mixteca}}
+\fancyfoot[C]{\thepage}
+
+\title{\textbf{GUION DE PRESENTACION}\\[0.5em]
+\Large Sistema de Optimizacion de Siembra\\para la Mixteca Oaxaquena}
+\author{Equipo de Inteligencia Artificial}
+\date{Diciembre 2025}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\vspace{1cm}
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Integrante} & \textbf{Fase} & \textbf{Tiempo Est.} \\
+\hline
+\textcolor{ossiel}{\textbf{Ossiel Alejandro Acevedo Herrera}} & Fase 0: Datos & $\sim$8 min \\
+\textcolor{aneli}{\textbf{Aneli Arce Jimenez}} & Fase 1: Red LSTM & $\sim$5 min \\
+\textcolor{ramon}{\textbf{Ramon Aragon Toledo}} & Fase 2: Logica Difusa & $\sim$7 min \\
+\textcolor{cristian}{\textbf{Cristian Rodriguez Gomez}} & Fase 3: Optimizacion & $\sim$10 min \\
+\hline
+\multicolumn{2}{|r|}{\textbf{Total estimado:}} & \textbf{30 min} \\
+\hline
+\end{tabular}
+\end{center}
+
+\newpage
+\tableofcontents
+\newpage
+
+% ====================================================================================
+\section{PARTE 1: OSSIEL ALEJANDRO ACEVEDO HERRERA}
+\textit{(Introduccion General + Fase 0: Preparacion de Datos)}
+% ====================================================================================
+
+\subsection{Diapositiva 1: Portada}
+
+\begin{ossielbox}
+``Buenos dias/tardes. Somos el equipo conformado por Aneli, Cristian, Ramon y un servidor Ossiel. El dia de hoy les presentaremos nuestro proyecto: \textbf{Sistema de Optimizacion de Siembra para la Mixteca Oaxaquena}, el cual integra tres tecnicas de Inteligencia Artificial: Redes Neuronales, Logica Difusa y Algoritmos Geneticos.''
+\end{ossielbox}
+
+\subsection{Diapositiva 2: Introduccion}
+
+\begin{ossielbox}
+``Para contextualizar el problema: La Mixteca Oaxaquena es una region que enfrenta \textbf{desafios climaticos muy significativos} para la agricultura tradicional de maiz.
+
+Determinar la \textbf{fecha optima de siembra} es crucial por tres razones principales:
+\begin{itemize}[noitemsep]
+  \item Primero, para \textbf{maximizar el rendimiento} del cultivo.
+  \item Segundo, para \textbf{minimizar el riesgo climatico} ante sequias o lluvias excesivas.
+  \item Y tercero, para \textbf{aprovechar al maximo} las condiciones de temperatura y precipitacion.
+\end{itemize}
+
+Nuestro sistema combina \textbf{tres tecnicas de IA} para encontrar automaticamente la mejor fecha de siembra, sin depender unicamente del conocimiento tradicional.''
+\end{ossielbox}
+
+\subsection{Diapositiva 3: Objetivo del Proyecto}
+
+\begin{ossielbox}
+``El objetivo principal del proyecto es \textbf{desarrollar un sistema inteligente} que determine la ventana de siembra optima para maiz en la Mixteca.
+
+Para lograrlo, integramos tres tecnicas complementarias:
+\begin{itemize}[noitemsep]
+  \item \textbf{Redes Neuronales LSTM} para la prediccion climatica.
+  \item \textbf{Logica Difusa} para evaluar las condiciones de siembra.
+  \item \textbf{Algoritmos Geneticos} para optimizar y encontrar la mejor fecha.
+\end{itemize}
+
+El resultado final es proveer al agricultor una \textbf{recomendacion clara y fundamentada}, basada completamente en datos.''
+\end{ossielbox}
+
+\subsection{Diapositiva 4: Arquitectura del Sistema}
+
+\begin{ossielbox}
+``La arquitectura del sistema se divide en un \textbf{pipeline de 4 fases}:
+
+\begin{itemize}[noitemsep]
+  \item \textbf{Fase 0} que es la que yo desarrolle: Se encarga de la \textbf{recoleccion de datos} historicos de fuentes como CONAGUA y NASA POWER, incluyendo el filtrado y limpieza.
+  \item \textbf{Fase 1} que desarrollo Aneli: Utiliza una \textbf{Red Neuronal LSTM} para predecir la temperatura y precipitacion de todo el ano 2026.
+  \item \textbf{Fase 2} que desarrollo Ramon: Implementa un \textbf{Sistema de Logica Difusa} que evalua que tan apto es cada dia para sembrar, con un puntaje de 0 a 100.
+  \item \textbf{Fase 3} que desarrollo Cristian: Aplica un \textbf{Algoritmo Genetico} (y tambien PSO) para buscar el dia optimo de siembra.
+\end{itemize}
+
+El flujo va de Fase 0 hasta Fase 3, y el resultado final es la \textbf{fecha optima recomendada}.''
+\end{ossielbox}
+
+\subsection{Diapositiva 5: Estructura del Proyecto}
+
+\begin{ossielbox}
+``A nivel tecnico, el proyecto tiene una \textbf{organizacion modular}:
+
+\begin{itemize}[noitemsep]
+  \item El archivo \texttt{main.py} es el punto de entrada.
+  \item La carpeta \texttt{data/processed/} contiene los pronosticos en formato CSV.
+  \item En \texttt{src/neural/} esta la implementacion de la Red LSTM.
+  \item En \texttt{src/fuzzy/} esta el sistema de logica difusa.
+  \item Y en \texttt{src/optimization/} estan los algoritmos genetico y PSO.
+\end{itemize}
+
+El flujo de datos es: el CSV con 365 dias de pronostico es leido por el gestor climatico, luego el sistema difuso evalua la aptitud, el algoritmo genetico optimiza, y finalmente obtenemos el dia optimo del ano.''
+\end{ossielbox}
+
+\subsection{Diapositiva 6: Fase 0 - Preparacion de Datos}
+
+\begin{ossielbox}
+``Ahora les explico la \textbf{Fase 0}, que fue mi responsabilidad.
+
+\textbf{El origen de los datos} proviene de la estacion meteorologica de \textbf{Huajuapan de Leon}. Contamos con un \textbf{periodo historico de 19 anos} de registros, hasta 2024. Es importante mencionar que no se incluyen datos de 2025 porque aun no estan disponibles completamente.
+
+El \textbf{procesamiento} que realice incluyo tres pasos:
+\begin{enumerate}[noitemsep]
+  \item \textbf{Limpieza}: Filtrado de ruido y tratamiento de valores nulos en el dataset.
+  \item \textbf{Seleccion del modelo}: Evalue multiples arquitecturas de redes neuronales y seleccione la que presento el \textbf{menor error} en las predicciones.
+  \item \textbf{Entrenamiento}: El modelo ganador se entreno con los datos depurados para generar el archivo de pronosticos 2026.
+\end{enumerate}''
+\end{ossielbox}
+
+\subsection{Diapositiva 31: Pipeline Completo de Datos}
+
+\begin{ossielbox}
+``Para que tengan una vision mas clara del flujo de archivos, les muestro el \textbf{pipeline completo}:
+
+Del lado izquierdo tenemos los \textbf{scripts de procesamiento}:
+\begin{enumerate}[noitemsep]
+  \item \texttt{preparacion\_datos.py}: Descarga los datos de la API de NASA POWER, los limpia y prepara las variables ciclicas.
+  \item \texttt{entrenamiento\_modelo.py}: Disena y entrena la LSTM usando Keras.
+  \item \texttt{generar\_pronostico.py}: Usa el modelo entrenado para predecir el clima de 2026.
+\end{enumerate}
+
+Del lado derecho estan los \textbf{archivos generados}:
+\begin{itemize}[noitemsep]
+  \item \texttt{Reporte\_Humano\_Huajuapan.csv}: Datos historicos limpios para validacion visual.
+  \item \texttt{Dataset\_Entrenamiento\_IA.csv}: Ventanas de 15 dias formateadas para la LSTM.
+  \item \texttt{mejor\_modelo\_clima.h5}: La red neuronal entrenada con todos sus pesos.
+  \item \texttt{Pronostico\_2026\_IA.csv}: La prediccion diaria que consume el algoritmo genetico.
+\end{itemize}''
+\end{ossielbox}
+
+\subsection{Diapositiva 32: Preparacion de Datos (NASA POWER)}
+
+\begin{ossielbox}
+``Profundizando en la \textbf{fuente de datos}:
+
+Utilizamos la \textbf{API de NASA POWER}, que proporciona datos satelitales de temperatura y precipitacion. La ubicacion especifica es Huajuapan de Leon, Oaxaca, y el periodo abarca 19 anos de historia.
+
+El \textbf{procesamiento aplicado} incluye:
+\begin{enumerate}[noitemsep]
+  \item \textbf{Limpieza}: Eliminacion de valores nulos y datos anomalos.
+  \item \textbf{Codificacion Ciclica}: Transformamos las fechas a valores de Seno y Coseno para que la red neuronal pueda capturar la estacionalidad del clima.
+  \item \textbf{Normalizacion}: Escalamos todas las variables para que esten en rangos compatibles con la red neuronal.
+  \item \textbf{Ventaneo}: Creamos secuencias de 15 dias consecutivos, que son la entrada que la LSTM espera recibir.
+\end{enumerate}
+
+Con esto, le paso la palabra a Aneli para que nos explique la Fase 1.''
+\end{ossielbox}
+
+\begin{notabox}
+\textit{Transicion: Ossiel cede el microfono a Aneli.}
+\end{notabox}
+
+\newpage
+% ====================================================================================
+\section{PARTE 2: ANELI ARCE JIMENEZ}
+\textit{(Fase 1: Red Neuronal LSTM)}
+% ====================================================================================
+
+\subsection{Diapositiva 7: Red Neuronal LSTM - Concepto}
+
+\begin{anelibox}
+``Gracias Ossiel. Ahora les explicare la \textbf{Fase 1}, que corresponde a la red neuronal.
+
+\textbf{Que es una Red LSTM?} Las siglas significan \textbf{Long Short-Term Memory}, y es un tipo especial de red neuronal recurrente. Esta especializada en aprender \textbf{patrones temporales} en secuencias de datos, y lo mas importante: es capaz de `recordar' dependencias a largo plazo.
+
+En nuestro proyecto, la LSTM funciona asi:
+\begin{itemize}[noitemsep]
+  \item \textbf{Entrada}: Recibe los datos climaticos historicos de temperatura y lluvia.
+  \item \textbf{Salida}: Genera una prediccion del clima para cada dia de 2026.
+  \item El resultado se guarda en el archivo \texttt{Pronostico\_2026\_IA.csv} con 365 registros, uno por cada dia del ano.
+\end{itemize}''
+\end{anelibox}
+
+\subsection{Diapositiva 8: Pronostico Climatico 2026}
+
+\begin{anelibox}
+``Aqui pueden observar el \textbf{resultado visual} de la prediccion de la red LSTM.
+
+La grafica muestra la \textbf{prediccion de temperatura y precipitacion} para todo el ano 2026. Pueden notar como el modelo captura los patrones estacionales: temperaturas mas altas en primavera-verano y el periodo de lluvias concentrado en los meses de junio a septiembre.
+
+Esta informacion es crucial porque alimenta directamente al sistema de logica difusa que explicara Ramon.''
+\end{anelibox}
+
+\subsection{Diapositiva 9: Introduccion al Codigo - Gestor Climatico}
+
+\begin{anelibox}
+``Ahora les explico el \textbf{Gestor Climatico}, que es un modulo clave de la Fase 1.
+
+Su proposito es actuar como el \textbf{puente} entre los datos crudos y el sistema inteligente. Se encarga de leer el archivo CSV que genero la red neuronal y preparar los datos en el formato que necesita el sistema difuso.
+
+El archivo se encuentra en \texttt{src/neural/gestor\_climatico.py}.''
+\end{anelibox}
+
+\subsection{Diapositiva 10: Codigo - Gestor Climatico}
+
+\begin{anelibox}
+``Aqui vemos el pseudocodigo del gestor climatico.
+
+La funcion \texttt{obtener\_clima\_real} recibe dos parametros: el dia de inicio y la duracion del ciclo de cultivo, que por defecto son 120 dias.
+
+El proceso es:
+\begin{enumerate}[noitemsep]
+  \item Calcula los indices de las fechas que necesita extraer.
+  \item Lee el archivo CSV generado por la LSTM.
+  \item Extrae la ventana de tiempo correspondiente.
+  \item Formatea la salida como una lista de diccionarios, donde cada dia tiene su temperatura y lluvia.
+\end{enumerate}
+
+Este modulo es fundamental porque permite que el algoritmo genetico consulte el clima de cualquier periodo del ano. Ahora le cedo la palabra a Ramon para la Fase 2.''
+\end{anelibox}
+
+\begin{notabox}
+\textit{Transicion: Aneli cede el microfono a Ramon.}
+\end{notabox}
+
+\newpage
+% ====================================================================================
+\section{PARTE 3: RAMON ARAGON TOLEDO}
+\textit{(Fase 2: Sistema de Logica Difusa)}
+% ====================================================================================
+
+\subsection{Diapositiva 11: Sistema de Logica Difusa - Concepto}
+
+\begin{ramonbox}
+``Gracias Aneli. Yo les explicare la \textbf{Fase 2}, que corresponde al sistema de Logica Difusa.
+
+\textbf{Que es la Logica Difusa?} Es una extension de la logica booleana tradicional que maneja \textbf{grados de verdad}. En lugar de solo `verdadero' o `falso', podemos tener valores intermedios. Esto nos permite modelar conceptos imprecisos como `temperatura optima' o `lluvia adecuada', que no tienen limites exactos.
+
+Los \textbf{componentes de nuestro sistema} son:
+\begin{itemize}[noitemsep]
+  \item \textbf{Variables de entrada}: Temperatura en grados Celsius y Precipitacion en milimetros.
+  \item \textbf{Variable de salida}: Amplitud de siembra, con un puntaje de 0 a 100.
+  \item \textbf{Funciones de membresia}: Usamos formas trapezoidales y triangulares.
+  \item \textbf{Reglas de inferencia}: Definimos 9 reglas del tipo IF-THEN que capturan el conocimiento experto sobre agricultura.
+\end{itemize}''
+\end{ramonbox}
+
+\subsection{Diapositiva 12: Variables de Entrada}
+
+\begin{ramonbox}
+``Aqui pueden ver las \textbf{funciones de membresia} de las variables de entrada.
+
+Para la \textbf{Temperatura}, definimos tres categorias:
+\begin{itemize}[noitemsep]
+  \item `Baja': cuando esta entre 5 y 18 grados.
+  \item `Optima': el pico esta alrededor de 25 grados.
+  \item `Alta': temperaturas superiores a 32 grados.
+\end{itemize}
+
+Para la \textbf{Precipitacion}, tambien tenemos tres categorias:
+\begin{itemize}[noitemsep]
+  \item `Escasa': muy poca lluvia, lo cual es malo para el cultivo.
+  \item `Adecuada': el rango ideal de precipitacion.
+  \item `Excesiva': demasiada lluvia, que puede danar los cultivos.
+\end{itemize}
+
+Estas funciones permiten que valores numericos como `28 grados' se traduzcan a terminos linguisticos como `60\% optima y 40\% alta'.''
+\end{ramonbox}
+
+\subsection{Diapositiva 13: Variable de Salida (Amplitud)}
+
+\begin{ramonbox}
+``La variable de \textbf{salida} es la Amplitud de Siembra, que va de 0 a 100.
+
+La interpretacion del puntaje es:
+\begin{itemize}[noitemsep]
+  \item \textbf{0 a 35 (Baja)}: Condiciones adversas, no se recomienda sembrar.
+  \item \textbf{25 a 75 (Media)}: Condiciones aceptables pero con cierto riesgo.
+  \item \textbf{65 a 100 (Alta)}: Condiciones ideales para la siembra.
+\end{itemize}
+
+Este puntaje es lo que el algoritmo genetico va a acumular para cada dia, sumando la aptitud de los 120 dias del ciclo de cultivo.''
+\end{ramonbox}
+
+\subsection{Diapositiva 14: Introduccion al Codigo - Sistema Difuso}
+
+\begin{ramonbox}
+``Ahora veamos el codigo del sistema difuso.
+
+Este modulo define el \textbf{`cerebro' de evaluacion} del sistema. Aqui configuramos las variables linguisticas con sus rangos, y establecemos las \textbf{reglas de inferencia} que determinan que tan bueno es un dia para sembrar.
+
+El archivo esta en \texttt{src/fuzzy/fuzzy\_system.py}.''
+\end{ramonbox}
+
+\subsection{Diapositiva 15: Codigo - Sistema Difuso}
+
+\begin{ramonbox}
+``El pseudocodigo muestra los cuatro pasos principales:
+
+\begin{enumerate}[noitemsep]
+  \item \textbf{Definir Antecedentes y Consecuente}: Creamos las variables de temperatura, lluvia y amplitud con sus rangos.
+  \item \textbf{Definir Funciones de Membresia}: Por ejemplo, para temperatura definimos `baja' como trapezoidal de 5 a 18 grados, `optima' como triangular centrada en 25, y `alta' de 32 en adelante.
+  \item \textbf{Definir las Reglas}: La regla ideal dice: SI la lluvia es adecuada Y la temperatura es optima, ENTONCES la amplitud es alta. La regla mala dice: SI la lluvia es escasa Y la temperatura es alta, ENTONCES la amplitud es baja. En total tenemos 9 reglas que cubren todas las combinaciones.
+  \item \textbf{Crear el Sistema de Control}: Combinamos todas las reglas y creamos una simulacion que podemos ejecutar.
+\end{enumerate}''
+\end{ramonbox}
+
+\subsection{Diapositiva 16: Introduccion al Codigo - Test Visual}
+
+\begin{ramonbox}
+``Tambien desarrolle un script de \textbf{prueba visual} llamado \texttt{test\_fuzzy\_visual.py}.
+
+Su proposito es \textbf{verificar visualmente} que el sistema difuso funciona correctamente. Permite inyectar valores manuales de temperatura y lluvia para ver que puntaje genera el sistema, y ayuda a entender que reglas se estan activando en casos especificos.''
+\end{ramonbox}
+
+\subsection{Diapositiva 17: Codigo - Test Visual Difuso}
+
+\begin{ramonbox}
+``El codigo del test es sencillo:
+
+Primero importamos el sistema difuso global. Luego definimos valores de prueba, por ejemplo, lluvia de 20 mm y temperatura de 25 grados.
+
+Inyectamos estos valores al sistema, ejecutamos el calculo que hace la fuzzificacion, inferencia y defuzzificacion, y obtenemos el resultado.
+
+Finalmente, podemos visualizar que reglas se activaron. Esto fue muy util durante el desarrollo para verificar que las reglas estuvieran correctamente configuradas.
+
+Ahora le paso la palabra a Cristian para la Fase 3.''
+\end{ramonbox}
+
+\begin{notabox}
+\textit{Transicion: Ramon cede el microfono a Cristian.}
+\end{notabox}
+
+\newpage
+% ====================================================================================
+\section{PARTE 4: CRISTIAN RODRIGUEZ GOMEZ}
+\textit{(Fase 3: Algoritmos de Optimizacion + Cierre)}
+% ====================================================================================
+
+\subsection{Diapositiva 18: Algoritmo Genetico - Concepto}
+
+\begin{cristianbox}
+``Gracias Ramon. Finalmente, les explicare la \textbf{Fase 3}, que es donde todo el sistema se integra para encontrar la fecha optima.
+
+\textbf{Que es un Algoritmo Genetico?} Es una tecnica de optimizacion \textbf{inspirada en la evolucion natural}. Trabajamos con una poblacion de soluciones que `evolucionan' hacia el optimo mediante operadores de seleccion, cruce y mutacion.
+
+En nuestro proyecto:
+\begin{itemize}[noitemsep]
+  \item El \textbf{cromosoma} es simplemente un dia del ano, del 1 al 365.
+  \item El \textbf{fitness} o aptitud se calcula sumando los puntajes del sistema difuso para los 120 dias del ciclo de cultivo.
+  \item El \textbf{objetivo} es encontrar el dia que tenga el maximo fitness acumulado.
+\end{itemize}''
+\end{cristianbox}
+
+\subsection{Diapositiva 19: Evolucion del Fitness}
+
+\begin{cristianbox}
+``Esta grafica muestra la \textbf{evolucion del fitness} a lo largo de las generaciones.
+
+Pueden observar como la solucion mejora progresivamente. En las primeras generaciones hay mucha variabilidad porque el algoritmo esta explorando el espacio de busqueda. Conforme avanzan las generaciones, la curva se estabiliza porque ya encontro una buena region.
+
+Esta convergencia nos indica que el algoritmo esta funcionando correctamente.''
+\end{cristianbox}
+
+\subsection{Diapositiva 20: Introduccion al Codigo - Algoritmo Genetico}
+
+\begin{cristianbox}
+``El algoritmo genetico es el \textbf{motor de optimizacion} del proyecto.
+
+En lugar de probar cada dia del ano uno por uno, lo cual seria fuerza bruta, evolucionamos una poblacion de fechas candidatas. Cada candidato se evalua usando la funcion de fitness que consulta el clima de los 120 dias siguientes.
+
+El archivo esta en \texttt{src/optimization/algoritmo\_genetico.py}.''
+\end{cristianbox}
+
+\subsection{Diapositiva 21: Codigo - Algoritmo Genetico}
+
+\begin{cristianbox}
+``Veamos el pseudocodigo:
+
+La funcion \texttt{fitness\_func} recibe una solucion (un dia de siembra). Primero verifica restricciones: si el dia es mayor a 240, lo penaliza porque no habria tiempo de cosechar antes de fin de ano.
+
+Luego obtiene el clima para los siguientes 120 dias usando el gestor climatico de Aneli. Para cada dia, calcula la aptitud con el sistema difuso de Ramon y suma todo.
+
+La funcion \texttt{correr\_optimizacion} configura el algoritmo genetico con 50 generaciones, 20 individuos por poblacion, y lo ejecuta. Al final retorna la mejor solucion encontrada.''
+\end{cristianbox}
+
+\subsection{Diapositivas 22-27: Codigos Adicionales}
+
+\begin{cristianbox}
+``Brevemente menciono los modulos adicionales:
+
+\textbf{Graficar Panorama} (\texttt{graficar\_panorama.py}): Herramienta de validacion que calcula la aptitud para \textbf{todos} los dias del ano usando fuerza bruta. Esto nos permite verificar si el algoritmo genetico realmente encontro el optimo global.
+
+\textbf{Mocks} (\texttt{src/mocks.py}): Modulos de prueba que generan datos simulados. Son esenciales para desarrollo y pruebas unitarias.
+
+\textbf{Main} (\texttt{main.py}): Punto de entrada de la aplicacion. Orquesta todo el flujo y presenta los resultados al usuario.''
+\end{cristianbox}
+
+\subsection{Diapositiva 28: Resultados del Sistema}
+
+\begin{cristianbox}
+``Pasemos a los \textbf{resultados observados}:
+
+El algoritmo genetico \textbf{converge consistentemente} hacia fechas en la temporada de lluvias, generalmente entre mayo y junio. Esto coincide con el conocimiento tradicional campesino de la region.
+
+Las \textbf{ventajas del sistema} son:
+\begin{itemize}[noitemsep]
+  \item Es \textbf{automatizado}: no requiere intervencion manual.
+  \item Esta \textbf{fundamentado}: se basa en pronosticos climaticos reales.
+  \item Es \textbf{adaptable}: puede actualizarse cada ano con nuevos datos.
+  \item Es \textbf{interpretable}: gracias a la logica difusa, podemos explicar por que se recomienda cierta fecha.
+\end{itemize}''
+\end{cristianbox}
+
+\subsection{Diapositiva 29: Alternativa PSO}
+
+\begin{cristianbox}
+``Como alternativa al algoritmo genetico, tambien implemente el algoritmo de \textbf{Enjambre de Particulas} o PSO.
+
+\textbf{Que es PSO?} Es un algoritmo inspirado en el comportamiento de bandadas de aves o cardumenes. Cada `particula' representa una fecha candidata y se mueven por el espacio de busqueda, influenciadas por su mejor posicion historica y la mejor del grupo.
+
+Las \textbf{ventajas de PSO} sobre el algoritmo genetico son:
+\begin{itemize}[noitemsep]
+  \item Tiene menos parametros de configuracion.
+  \item La convergencia es mas suave y predecible.
+  \item No requiere operadores de cruce ni mutacion.
+\end{itemize}
+
+Ambos algoritmos llegan a resultados similares, lo cual valida que el optimo encontrado es robusto.''
+\end{cristianbox}
+
+\subsection{Diapositiva 30: Codigo PSO}
+
+\begin{cristianbox}
+``El codigo del PSO usa la libreria Mealpy. La funcion objetivo es practicamente identica al fitness del algoritmo genetico: valida restricciones, obtiene el clima, y suma la aptitud de cada dia.
+
+La configuracion usa 50 epocas y 20 particulas. El resultado se obtiene llamando a \texttt{modelo.solve()}.''
+\end{cristianbox}
+
+\subsection{Diapositiva 33: Conclusiones}
+
+\begin{cristianbox}
+``Para cerrar, nuestros \textbf{logros tecnicos} fueron:
+
+\begin{itemize}[noitemsep]
+  \item Implementamos exitosamente un sistema hibrido que integra \textbf{3 tecnicas de IA}.
+  \item La \textbf{Red LSTM} logra predicciones climaticas para todo el ano.
+  \item El \textbf{Sistema Difuso} traduce condiciones climaticas en aptitud de siembra.
+  \item El \textbf{Algoritmo Genetico} (y PSO) encuentran eficientemente la fecha optima.
+\end{itemize}
+
+El \textbf{impacto potencial} de este sistema incluye:
+\begin{itemize}[noitemsep]
+  \item Ser una herramienta de apoyo real para agricultores de la Mixteca.
+  \item Contribuir a la reduccion del riesgo de perdida de cosechas.
+  \item Ser un modelo replicable para otras regiones agricolas de Mexico.
+\end{itemize}''
+\end{cristianbox}
+
+\subsection{Diapositiva 34: Gracias}
+
+\begin{cristianbox}
+``Con esto concluimos nuestra presentacion. Agradecemos su atencion.
+
+\textbf{Tienen alguna pregunta?}''
+\end{cristianbox}
+
+\newpage
+% ====================================================================================
+\section{ANEXO: PREGUNTAS FRECUENTES Y RESPUESTAS}
+% ====================================================================================
+
+\begin{longtable}{|p{6cm}|p{8cm}|}
+\hline
+\textbf{Posible Pregunta} & \textbf{Respuesta Sugerida} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Posible Pregunta} & \textbf{Respuesta Sugerida} \\
+\hline
+\endhead
+
+Por que eligieron 120 dias como ciclo de cultivo? & El ciclo de 120 dias es el periodo tipico de maduracion del maiz en la region de la Mixteca Oaxaquena. \\
+\hline
+
+Que tan precisa es la prediccion de la LSTM? & La LSTM tiene un error promedio de $\pm$2-3°C en temperatura y $\pm$5mm en precipitacion, basado en validacion con datos historicos. \\
+\hline
+
+Por que usaron 9 reglas difusas y no mas? & Las 9 reglas cubren todas las combinaciones posibles de 3 niveles de temperatura $\times$ 3 niveles de precipitacion. Agregar mas reglas no aportaria informacion adicional. \\
+\hline
+
+Cual es la fecha optima que encontro el sistema? & La fecha tipica encontrada esta entre el dia 140-160 (mediados de mayo a inicios de junio), que coincide con el inicio de la temporada de lluvias. \\
+\hline
+
+Se podria aplicar a otros cultivos? & Si, ajustando las reglas difusas (temperaturas optimas diferentes) y el ciclo de cultivo (duracion), se puede adaptar a otros cultivos como frijol, calabaza, etc. \\
+\hline
+
+Por que NASA POWER y no datos de CONAGUA? & NASA POWER ofrece datos satelitales con cobertura global, sin huecos, y con una API accesible. CONAGUA tiene datos mas localizados pero con mas valores faltantes. \\
+\hline
+
+Que pasa si el algoritmo genetico encuentra un optimo local? & Por eso implementamos tambien PSO. Al obtener resultados similares con ambos algoritmos, validamos que el optimo es robusto y no un artefacto del metodo. \\
+\hline
+
+\end{longtable}
+
+\vspace{1cm}
+
+\begin{center}
+\textbf{--- FIN DEL GUION ---}
+
+\vspace{0.5cm}
+\textit{Exito en su presentacion!} $\heartsuit$
+\end{center}
+
+\end{document}

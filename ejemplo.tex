@@ -1,0 +1,558 @@
+\documentclass{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{ragged2e}
+
+% ====== COLORES CAFÉS / OSCUROS ======
+\definecolor{mybg}{RGB}{24,20,18}
+\definecolor{myaccent}{RGB}{214,163,92}
+\definecolor{mysecondary}{RGB}{180,120,70}
+
+\usetheme{Madrid}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+\setbeamercolor{background canvas}{bg=mybg}
+\setbeamercolor{normal text}{fg=white}
+\setbeamercolor{frametitle}{fg=white,bg=black!70}
+\setbeamercolor{title}{fg=white}
+\setbeamercolor{structure}{fg=myaccent}
+\setbeamercolor{itemize item}{fg=myaccent}
+\setbeamercolor{itemize subitem}{fg=mysecondary}
+
+\setkeys{Gin}{width=\linewidth, keepaspectratio}
+
+\title{Segmentación de Rasgos Importantes \\ para la Identificación de Rostros}
+\subtitle{Comparativa de métodos: Otsu, Umbral Adaptativo, K-Means y GrabCut}
+\author{\textbf{Integrantes:}\\
+Anelí Arce Jiménez\\
+Cristian Rodríguez Gómez\\
+Ossiel Alejandro Acevedo Herrera\\
+Ramón Aragón Toledo}
+\institute{Procesamiento Digital de Imágenes}
+\date{\today}
+
+\begin{document}
+
+%------------------ DIAPOSITIVA 1: PORTADA ------------------
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%------------------ DIAPOSITIVA 2: INTRODUCCIÓN ------------------
+\begin{frame}{Introducción}
+  \justifying
+  \begin{itemize}
+    \item Una vez detectado y alineado el rostro, el siguiente paso crítico es el \textbf{aislamiento de las regiones de interés}, específicamente los ojos, para un análisis más detallado.
+    \item La segmentación precisa de esta zona es fundamental para tareas avanzadas como:
+    \begin{itemize}
+      \item Detección de la pupila y análisis del iris para reconocimiento biométrico.
+      \item Seguimiento de la mirada (gaze tracking).
+      \item Detección de estados de fatiga o ánimo.
+    \end{itemize}
+    \item El desempeño de estos algoritmos afecta directamente la calidad de los pasos posteriores del pipeline biométrico.
+  \end{itemize}
+\end{frame}
+
+%------------------ DIAPOSITIVA 3: OBJETIVO ------------------
+\begin{frame}{Objetivo}
+  \begin{itemize}
+    \item \textbf{Implementar y comparar cuatro métodos distintos de segmentación} para determinar cuál ofrece el rendimiento óptimo para nuestro proyecto.
+    \item Identificar ventajas, limitaciones y costos computacionales de cada técnica:
+    \begin{itemize}
+      \item Umbralización de Otsu (línea base).
+      \item Umbralización Adaptativa.
+      \item Clustering con K-Means.
+      \item Algoritmo GrabCut.
+    \end{itemize}
+    \item Documentar aprendizajes prácticos que orienten la integración al flujo de trabajo principal del proyecto.
+  \end{itemize}
+\end{frame}
+
+%------------------ DIAPOSITIVA 4: TÉCNICAS OVERVIEW ------------------
+\begin{frame}{Técnicas y algoritmos evaluados}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}
+        \item \textbf{Otsu}: Umbralización global automática que maximiza la varianza entre clases.
+        \item \textbf{Umbral Adaptativo}: Calcula umbrales locales por vecindad gaussiana.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}
+        \item \textbf{K-Means}: Clustering no supervisado para separar pupila, iris y esclerótica.
+        \item \textbf{GrabCut}: Segmentación iterativa basada en grafos con modelos GMM.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%------------------ DIAPOSITIVA 5: OTSU - CONCEPTO ------------------
+\begin{frame}{Técnica 1: Umbralización de Otsu}
+  \justifying
+  \textbf{Concepto Clave:}
+  \begin{itemize}
+    \item El método de Otsu es una técnica de \textbf{umbralización global automática}.
+    \item Su funcionamiento se basa en encontrar un valor de umbral óptimo que separe los píxeles en dos clases (fondo y objeto) \textbf{maximizando la varianza entre ellas}.
+    \item Es ideal para imágenes con histogramas bimodales.
+  \end{itemize}
+  
+  \vspace{0.5em}
+  \textbf{Implementación:}
+  \begin{enumerate}
+    \item Generar máscara poligonal con \texttt{cv2.convexHull} usando puntos clave del ojo.
+    \item Aplicar \texttt{cv2.threshold} con bandera \texttt{THRESH\_OTSU}.
+  \end{enumerate}
+\end{frame}
+
+%------------------ DIAPOSITIVA 6: OTSU - VENTAJAS Y DESVENTAJAS ------------------
+\begin{frame}{Otsu: Ventajas y limitaciones}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Ventajas:}
+      \begin{itemize}
+        \item Rápido y eficiente.
+        \item No requiere ajuste manual de parámetros.
+        \item Base reproducible para comparaciones.
+      \end{itemize}
+      
+      \vspace{1em}
+      \textbf{Limitaciones:}
+      \begin{itemize}
+        \item Sensible a la iluminación.
+        \item Al usar umbral global, puede fallar con gradientes fuertes de luz.
+        \item Pierde detalles finos del contorno.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{\detokenize{Otsu/WhatsApp Image 2025-11-20 at 10.15.42 PM.jpeg}}
+        \caption{\footnotesize Máscara generada con Otsu.}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%------------------ DIAPOSITIVA 7: OTSU - RESULTADOS ------------------
+\begin{frame}{Resultados de Otsu}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{\detokenize{Otsu/WhatsApp Image 2025-11-20 at 10.15.43 PM(1).jpeg}}
+        \caption{\footnotesize Segmentación ojo derecho.}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{\detokenize{Otsu/WhatsApp Image 2025-11-20 at 10.15.43 PM(2).jpeg}}
+        \caption{\footnotesize Segmentación ojo izquierdo.}
+      \end{figure}
+    \end{column}
+  \end{columns}
+  \vspace{0.5em}
+  \centering
+  \small Ofrece resultados aceptables pero tiende a perder detalles finos del contorno.
+\end{frame}
+
+%------------------ DIAPOSITIVA 8: ADAPTATIVA - CONCEPTO ------------------
+\begin{frame}{Técnica 2: Umbralización Adaptativa}
+  \justifying
+  \textbf{Concepto Clave:}
+  \begin{itemize}
+    \item A diferencia de Otsu, este método \textbf{no usa un único umbral global}.
+    \item Calcula un umbral diferente para cada píxel basándose en el brillo de los píxeles vecinos.
+    \item Es ideal para imágenes con \textbf{condiciones de iluminación variables}, como sombras proyectadas sobre el rostro.
+  \end{itemize}
+  
+  \vspace{0.5em}
+  \textbf{Proceso Implementado:}
+  \begin{enumerate}
+    \item Se aplica \texttt{cv2.adaptiveThreshold} a la imagen en escala de grises.
+    \item Se usa \texttt{ADAPTIVE\_THRESH\_GAUSSIAN\_C}: pondera píxeles vecinos con distribución gaussiana.
+    \item Parámetros clave: \texttt{blockSize} (tamaño de vecindad) y \texttt{C} (constante de ajuste).
+  \end{enumerate}
+\end{frame}
+
+%------------------ DIAPOSITIVA 9: ADAPTATIVA - VENTAJAS Y DESVENTAJAS ------------------
+\begin{frame}{Umbral Adaptativo: Ventajas y limitaciones}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Ventajas:}
+      \begin{itemize}
+        \item Robusto ante cambios de iluminación local.
+        \item Maneja bien sombras y reflejos heterogéneos.
+        \item Preserva detalles en zonas problemáticas.
+      \end{itemize}
+      
+      \vspace{1em}
+      \textbf{Limitaciones:}
+      \begin{itemize}
+        \item Requiere ajuste de parámetros (\texttt{blockSize}, \texttt{C}).
+        \item Proceso de prueba y error.
+        \item Puede introducir "ruido" si los parámetros no son correctos.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{\detokenize{Adaptativa/WhatsApp Image 2025-11-20 at 10.14.22 PM.jpeg}}
+        \caption{\footnotesize Umbral adaptativo aplicado.}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%------------------ DIAPOSITIVA 10: ADAPTATIVA - RESULTADOS ------------------
+\begin{frame}{Resultados de Umbralización Adaptativa}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{\detokenize{Adaptativa/WhatsApp Image 2025-11-20 at 10.14.22 PM(1).jpeg}}
+        \caption{\footnotesize Segmentación ojo derecho.}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{\detokenize{Adaptativa/WhatsApp Image 2025-11-20 at 10.14.22 PM(2).jpeg}}
+        \caption{\footnotesize Segmentación ojo izquierdo.}
+      \end{figure}
+    \end{column}
+  \end{columns}
+  \vspace{0.5em}
+  \centering
+  \small Maneja bien las sombras pero puede generar granulosidad en ciertas zonas.
+\end{frame}
+
+%------------------ DIAPOSITIVA 11: K-MEANS - CONCEPTO ------------------
+\begin{frame}{Técnica 3: Clustering con K-Means}
+  \justifying
+  \textbf{Concepto Clave:}
+  \begin{itemize}
+    \item K-Means es un algoritmo de \textbf{aprendizaje no supervisado} que agrupa datos en $K$ clústeres.
+    \item En este caso, los "datos" son los niveles de intensidad de los píxeles del ojo.
+    \item Objetivo: agruparlos en $K=3$ grupos que corresponden a:
+    \begin{itemize}
+      \item \textbf{Clúster 1} (más oscuro): Pupila.
+      \item \textbf{Clúster 2} (intermedio): Iris.
+      \item \textbf{Clúster 3} (más claro): Esclerótica (parte blanca) y reflejos.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+%------------------ DIAPOSITIVA 12: K-MEANS - PROCESO ------------------
+\begin{frame}{K-Means: Proceso de implementación}
+  \textbf{Pasos del algoritmo:}
+  \begin{enumerate}
+    \item \textbf{Aislamiento y preparación}: Se aísla la región del ojo con la máscara y se convierten los valores de píxeles en un vector 1D.
+    \item \textbf{Ejecución de K-Means}: Se ejecuta \texttt{cv2.kmeans} con $K=3$. El algoritmo devuelve a qué clúster pertenece cada píxel y el valor central (intensidad promedio) de cada clúster.
+    \item \textbf{Reconstrucción}: Se reconstruye la imagen del ojo, pintando cada píxel con el color del centroide de su clúster.
+    \item \textbf{Aislamiento de pupila}: Se identifica el clúster con el centroide más oscuro (valor más bajo) y se genera una máscara binaria para aislar únicamente la pupila.
+  \end{enumerate}
+\end{frame}
+
+%------------------ DIAPOSITIVA 13: K-MEANS - VENTAJAS Y DESVENTAJAS ------------------
+\begin{frame}{K-Means: Ventajas y limitaciones}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Ventajas:}
+      \begin{itemize}
+        \item \textbf{Segmentación más detallada}: puede separar múltiples componentes del ojo (pupila, iris), no solo objeto/fondo.
+        \item Excelente para aislar específicamente la pupila del iris.
+      \end{itemize}
+      
+      \vspace{1em}
+      \textbf{Limitaciones:}
+      \begin{itemize}
+        \item Computacionalmente más costoso que métodos de umbralización.
+        \item El número de clústeres $K$ es un hiperparámetro que debe definirse previamente.
+        \item La forma general del contorno puede no ser perfecta.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{\detokenize{K-Means/WhatsApp Image 2025-11-20 at 10.16.13 PM.jpeg}}
+        \caption{\footnotesize Clustering tripartito.}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%------------------ DIAPOSITIVA 14: K-MEANS - RESULTADOS ------------------
+\begin{frame}{Resultados de K-Means}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{\detokenize{K-Means/WhatsApp Image 2025-11-20 at 10.16.13 PM(2).jpeg}}
+        \caption{\footnotesize Clustering ojo derecho.}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{\detokenize{K-Means/WhatsApp Image 2025-11-20 at 10.16.13 PM(3).jpeg}}
+        \caption{\footnotesize Aislamiento de pupila.}
+      \end{figure}
+    \end{column}
+  \end{columns}
+  \vspace{0.5em}
+  \centering
+  \small Logra separar la pupila efectivamente, aunque el contorno general requiere refinamiento.
+\end{frame}
+
+%------------------ DIAPOSITIVA 15: GRABCUT - CONCEPTO ------------------
+\begin{frame}{Técnica 4: Segmentación con GrabCut}
+  \justifying
+  \textbf{Concepto Clave:}
+  \begin{itemize}
+    \item GrabCut es un algoritmo de segmentación avanzado \textbf{basado en grafos}.
+    \item Separa interactivamente el \textbf{primer plano (foreground)} del \textbf{fondo (background)}.
+    \item Funciona a partir de una estimación inicial: se le proporciona un rectángulo que contiene el objeto de interés.
+    \item El algoritmo asume que todo fuera del rectángulo es "fondo seguro" y trata de refinar qué es objeto y qué es fondo dentro del rectángulo.
+    \item Utiliza modelos de mezcla gaussiana (GMM) para modelar las distribuciones de color.
+  \end{itemize}
+\end{frame}
+
+%------------------ DIAPOSITIVA 16: GRABCUT - PROCESO ------------------
+\begin{frame}{GrabCut: Proceso de implementación}
+  \textbf{Pasos del algoritmo:}
+  \begin{enumerate}
+    \item \textbf{Cálculo del ROI}: A partir de los puntos clave del ojo, se calcula un rectángulo (\texttt{boundingRect}) que lo contiene. \textbf{Crucial}: se añade un margen amplio a este rectángulo. Este margen le da a GrabCut el "contexto" necesario (píxeles de piel) para diferenciarlo del ojo.
+    \item \textbf{Ejecución de GrabCut}: Se llama a \texttt{cv2.grabCut} con la imagen original (en color) y el rectángulo calculado. El algoritmo itera para encontrar la mejor separación.
+    \item \textbf{Generación de máscara}: El resultado clasifica los píxeles en 4 categorías. Se genera una máscara binaria final considerando como "objeto" los píxeles clasificados como "primer plano" y "probable primer plano".
+    \item \textbf{Plan de respaldo}: Si GrabCut falla (bajo contraste), el sistema recurre automáticamente al método de Otsu.
+  \end{enumerate}
+\end{frame}
+
+%------------------ DIAPOSITIVA 17: GRABCUT - VENTAJAS Y DESVENTAJAS ------------------
+\begin{frame}{GrabCut: Ventajas y limitaciones}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Ventajas:}
+      \begin{itemize}
+        \item \textbf{Resultados muy precisos}: generalmente superior a los otros métodos, ya que considera color, textura y contexto.
+        \item Contornos más limpios y estables.
+        \item \textbf{Robusto}: el plan de respaldo con Otsu lo hace más fiable.
+      \end{itemize}
+      
+      \vspace{1em}
+      \textbf{Limitaciones:}
+      \begin{itemize}
+        \item El más costoso computacionalmente de los cuatro.
+        \item Su rendimiento depende mucho de la calidad del rectángulo inicial y del margen proporcionado.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{\detokenize{GrabCut/WhatsApp Image 2025-11-20 at 10.15.08 PM.jpeg}}
+        \caption{\footnotesize ROI con margen para contexto.}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%------------------ DIAPOSITIVA 18: GRABCUT - RESULTADOS ------------------
+\begin{frame}{Resultados de GrabCut}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{\detokenize{GrabCut/WhatsApp Image 2025-11-20 at 10.15.09 PM(1).jpeg}}
+        \caption{\footnotesize Segmentación ojo derecho.}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{\detokenize{GrabCut/WhatsApp Image 2025-11-20 at 10.15.09 PM(2).jpeg}}
+        \caption{\footnotesize Segmentación ojo izquierdo.}
+      \end{figure>
+    \end{column}
+  \end{columns>
+  \vspace{0.5em}
+  \centering
+  \small Proporciona la segmentación más limpia y precisa del contorno del ojo completo.
+\end{frame}
+
+%------------------ DIAPOSITIVA 19: HERRAMIENTAS ------------------
+\begin{frame}{Herramientas digitales utilizadas}
+  \justifying
+  \textbf{Librerías principales:}
+  \begin{itemize}
+    \item \textbf{OpenCV (cv2)}: Biblioteca central para procesamiento de imágenes.
+    \begin{itemize}
+      \item Operaciones de umbralización: \texttt{cv2.threshold}, \texttt{cv2.adaptiveThreshold}.
+      \item Clustering: \texttt{cv2.kmeans}.
+      \item Segmentación avanzada: \texttt{cv2.grabCut}.
+      \item Manipulación de máscaras: \texttt{cv2.convexHull}, \texttt{cv2.boundingRect}.
+    \end{itemize}
+    \item \textbf{dlib}: Detección de rostros y predictor de landmarks faciales.
+    \begin{itemize}
+      \item Modelo preentrenado: \texttt{shape\_predictor\_68\_face\_landmarks.dat}.
+    \end{itemize}
+    \item \textbf{NumPy}: Operaciones vectoriales, manipulación de arrays y cálculo de distancias.
+    \item \textbf{Matplotlib}: Visualización y depuración de resultados intermedios.
+  \end{itemize}
+\end{frame}
+
+%------------------ DIAPOSITIVA 20: IMPLEMENTACIÓN ------------------
+\begin{frame}{Implementación}
+  \justifying
+  \textbf{Pipeline general del proyecto:}
+  \begin{enumerate}
+    \item \textbf{Detección facial}: Uso de dlib para localizar el rostro en la imagen.
+    \item \textbf{Extracción de landmarks}: Predictor de 68 puntos faciales para identificar la región ocular.
+    \item \textbf{Aislamiento de ROI}: Generación de máscaras poligonales convexas para cada ojo.
+    \item \textbf{Ejecución modular}: Cada algoritmo se ejecuta de forma independiente con parámetros documentados:
+    \begin{itemize}
+      \item \texttt{5\_segmentacion\_ojos.py} (Otsu)
+      \item \texttt{5\_1\_segmentacion\_adaptativa.py} (Adaptativo)
+      \item \texttt{5\_2\_segmentacion\_kmeans.py} (K-Means)
+      \item \texttt{5\_3\_segmentacion\_grabcut.py} (GrabCut)
+    \end{itemize}
+    \item \textbf{Evaluación y registro}: Salida visual organizada por carpetas para comparación cualitativa.
+  \end{enumerate}
+\end{frame}
+
+%------------------ DIAPOSITIVA 21: COMPARACIÓN VISUAL ------------------
+\begin{frame}{Comparación visual de resultados}
+  \centering
+  \textbf{Comparativa lado a lado para un mismo ojo}
+  
+  \vspace{0.5em}
+  \begin{columns}[c]
+    \begin{column}{0.24\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{\detokenize{Otsu/WhatsApp Image 2025-11-20 at 10.15.43 PM.jpeg}}
+      \small \textbf{Otsu}
+    \end{column}
+    \begin{column}{0.24\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{\detokenize{Adaptativa/WhatsApp Image 2025-11-20 at 10.14.23 PM.jpeg}}
+      \small \textbf{Adaptativo}
+    \end{column}
+    \begin{column}{0.24\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{\detokenize{K-Means/WhatsApp Image 2025-11-20 at 10.16.13 PM(1).jpeg}}
+      \small \textbf{K-Means}
+    \end{column}
+    \begin{column}{0.24\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{\detokenize{GrabCut/WhatsApp Image 2025-11-20 at 10.15.09 PM.jpeg}}
+      \small \textbf{GrabCut}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%------------------ DIAPOSITIVA 22: ANÁLISIS COMPARATIVO ------------------
+\begin{frame}{Análisis comparativo de métodos}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Otsu:}
+      \begin{itemize}
+        \item Bueno, pero pierde detalles finos.
+        \item Rápido y eficiente.
+      \end{itemize}
+      
+      \vspace{0.5em}
+      \textbf{Umbral Adaptativo:}
+      \begin{itemize}
+        \item Maneja bien las sombras.
+        \item Puede generar ruido.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{K-Means:}
+      \begin{itemize}
+        \item Logra separar la pupila.
+        \item Forma del contorno no perfecta.
+      \end{itemize}
+      
+      \vspace{0.5em}
+      \textbf{GrabCut:}
+      \begin{itemize}
+        \item \textbf{La segmentación más limpia y precisa}.
+        \item Mayor costo computacional.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%------------------ DIAPOSITIVA 23: FUTURAS MEJORAS ------------------
+\begin{frame}{Futuras mejoras}
+  \justifying
+  \textbf{Optimizaciones propuestas:}
+  \begin{itemize}
+    \item \textbf{Automatización de parámetros}: Implementar validación cruzada para selección automática de \texttt{blockSize}, $K$, e iteraciones de GrabCut.
+    \item \textbf{Métricas cuantitativas}: Integrar medidas objetivas como IoU (Intersection over Union) y precisión de contorno para comparación más rigurosa.
+    \item \textbf{Enfoque híbrido}: Combinar GrabCut para ROI global con K-Means adaptado para detalle pupilar específico.
+    \item \textbf{Deep Learning}: Explorar arquitecturas ligeras (U-Net, SegNet) para segmentación en tiempo real.
+    \item \textbf{Robustez ante variabilidad}: Ampliar dataset de prueba con diferentes etnias, edades y condiciones de iluminación.
+  \end{itemize}
+\end{frame}
+
+%------------------ DIAPOSITIVA 24: CONCLUSIONES ------------------
+\begin{frame}{Conclusiones}
+  \justifying
+  \textbf{Hallazgos técnicos:}
+  \begin{itemize}
+    \item Se implementaron y evaluaron con éxito cuatro técnicas de segmentación ocular.
+    \item \textbf{GrabCut} demostró ser el método más robusto y preciso, proporcionando la segmentación más limpia del contorno del ojo.
+    \item \textbf{K-Means} es una alternativa interesante si el objetivo es separar subcomponentes como pupila e iris.
+    \item \textbf{Otsu y Adaptativo} son métodos rápidos y sencillos, útiles como línea base o cuando la velocidad es crítica.
+  \end{itemize}
+  
+  \vspace{0.5em}
+  \textbf{Decisión para el proyecto:}
+  \begin{itemize}
+    \item Para las siguientes etapas que requieran máscara precisa del ojo, se utilizará la salida del script \texttt{5\_3\_segmentacion\_grabcut.py} debido a su superioridad en los resultados.
+  \end{itemize}
+\end{frame}
+
+%------------------ DIAPOSITIVA 25: APRENDIZAJES ------------------
+\begin{frame}{Aprendizajes del equipo}
+  \justifying
+  \textbf{Lo que aprendimos al realizar estas actividades:}
+  \begin{itemize}
+    \item \textbf{Importancia del preprocesamiento}: Comprendimos que la calidad de los landmarks y ROI determinan el éxito de cualquier algoritmo de segmentación.
+    \item \textbf{Impacto de parámetros}: Experimentamos directamente cómo la iluminación y el ajuste de parámetros afectan dramáticamente la calidad de la máscara resultante.
+    \item \textbf{Metodología comparativa}: El enfoque de evaluar múltiples técnicas nos dio criterio sólido para proponer pipelines híbridos y tomar decisiones fundamentadas.
+    \item \textbf{Documentación visual}: Organizar resultados por carpetas aceleró la retroalimentación del equipo y facilitó la comunicación de resultados.
+    \item \textbf{Balance costo-beneficio}: Aprendimos a evaluar el trade-off entre precisión y costo computacional según el contexto de aplicación.
+  \end{itemize}
+\end{frame}
+
+%------------------ DIAPOSITIVA 26: REFERENCIAS ------------------
+\begin{frame}[allowframebreaks]{Referencias}
+  \scriptsize
+  \textbf{Bibliografía técnica y científica:}
+  \begin{itemize}
+    \item King, D. E. (2009). \textit{Dlib-ML: A Machine Learning Toolkit}. Journal of Machine Learning Research, 10, 1755-1758. Disponible en: http://dlib.net
+    \item Kazemi, V., \& Sullivan, J. (2014). \textit{One Millisecond Face Alignment with an Ensemble of Regression Trees}. IEEE Conference on Computer Vision and Pattern Recognition (CVPR). Disponible en: https://www.cv-foundation.org/openaccess
+    \item Moreno Díaz, A. B. (2004). \textit{Reconocimiento Facial Automático mediante Técnicas de Procesado Digital de Imágenes}. Universidad Politécnica de Madrid.
+    \item Vázquez López, M. A. (2014). \textit{Sistema de Reconocimiento Facial Mediante Técnicas de Procesamiento Digital de Imágenes}. Centro de Investigación en Óptica.
+    \item Rother, C., Kolmogorov, V., \& Blake, A. (2004). \textit{"GrabCut": Interactive Foreground Extraction using Iterated Graph Cuts}. ACM Transactions on Graphics (SIGGRAPH).
+    \item Otsu, N. (1979). \textit{A Threshold Selection Method from Gray-Level Histograms}. IEEE Transactions on Systems, Man, and Cybernetics, 9(1), 62-66.
+  \end{itemize}
+  
+  \vspace{0.4em}
+  \textbf{Recursos de programación y modelos:}
+  \begin{itemize}
+    \item \textbf{Dlib}: http://dlib.net/ (Librería C++/Python para visión por computadora)
+    \item \textbf{Modelo preentrenado}: http://dlib.net/files/shape\_predictor\_68\_face\_landmarks.dat.bz2
+    \item \textbf{OpenCV (cv2)}: https://docs.opencv.org/ (Procesamiento de imágenes y segmentación)
+    \item \textbf{NumPy}: https://numpy.org/doc/stable/ (Operaciones numéricas)
+  \end{itemize}
+\end{frame}
+
+\end{document}

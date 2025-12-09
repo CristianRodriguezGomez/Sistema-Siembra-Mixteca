@@ -1,0 +1,25 @@
+\frametitle{Codigo: Optimizacion PSO (Mealpy)}
+\scriptsize
+  \begin{verbatim}
+IMPORTAR PSO, FloatVar DESDE mealpy
+
+FUNCION funcion_objetivo(solucion):
+    dia_siembra = ENTERO(solucion[0])
+
+    SI dia_siembra < 1 O dia_siembra > 240:
+        RETORNAR -999999  // Penalizacion
+
+    datos = obtener_clima_real(dia_siembra, 120)
+    score_total = 0
+
+    PARA dia EN datos:
+        aptitud = calcular_aptitud(dia.lluvia, dia.temp)
+        score_total += aptitud
+
+    RETORNAR score_total
+
+// Configuracion PSO
+limites = FloatVar(lb=[1], ub=[240])
+modelo = PSO.OriginalPSO(epoch=50, pop_size=20)
+mejor_agente = modelo.solve(problema)
+  \end{verbatim}
