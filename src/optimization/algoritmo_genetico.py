@@ -1,97 +1,138 @@
-import pygad
-import sys
+"""
+Módulo de Optimización con Enjambre de Partículas (PSO).
+
+Este script implementa el algoritmo PSO utilizando la librería Mealpy (v3)
+para encontrar la fecha óptima de siembra. Maximiza una función de aptitud
+basada en datos climáticos históricos y lógica difusa.
+"""
+
 import os
+import sys
 
-# ✔ PEP8: Importaciones estándar → terceros → locales (este orden está bien)
-# ✔ PEP8: líneas en blanco correctas entre bloques
+# ✔ PEP 8: Importaciones de terceros agrupadas
+import matplotlib.pyplot as plt
+import numpy as np
+from mealpy import PSO, FloatVar
 
-
-# --- 1. CONFIGURACIÓN DE RUTAS ---
-# Esto permite que Python encuentre las carpetas 'src', 'neural' y 'fuzzy'
-# sin importar desde dónde ejecutes el código.
-
+# --- CONFIGURACIÓN DE RUTAS ---
+# Se agrega el directorio padre al path para permitir importaciones locales
+# independientemente de desde dónde se ejecute el script.
 current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(os.path.dirname(current_dir))  # ✔ PEP8: espacio antes de comentario inline
+parent_dir = os.path.dirname(os.path.dirname(current_dir))
 sys.path.append(parent_dir)
 
-# ✔ PEP8: Nombres de variables en snake_case correctos
-# ✔ PEP8: Líneas <= 79-99 caracteres recomendadas (estas líneas están bien)
-
-
-# --- 2. IMPORTACIONES REALES (YA NO USAMOS MOCKS) ---
-# Traemos el lector del CSV de tu compañera (Fase 1)
-from src.neural.gestor_climatico import obtener_clima_real  # ✔ Importación específica OK
-
-# Traemos el evaluador difuso (Fase 2)
-# ✔ PEP8: Comentarios útiles y concisos
+# ✔ PEP 8: Importaciones locales al final
+from src.neural.gestor_climatico import obtener_clima_real
 from src.fuzzy.fuzzy_system import calcular_aptitud
 
 
-def fitness_func(ga_instance, solution, solution_idx):
-    # ✔ Nombre de función en snake_case
-    # ✔ Argumentos descriptivos
+def funcion_objetivo(solution):
+    """
+    Calcula la aptitud (fitness) de una solución propuesta por el PSO.
+
+    El algoritmo PSO propone un número flotante (ej. 45.3) que representa
+    el día de siembra. Esta función lo convierte a entero, recupera el clima
+    para los siguientes 120 días y evalúa su viabilidad usando lógica difusa.
+
+    Args:
+        solution (list): Lista con los valores de las dimensiones (aquí solo 1).
+
+    Returns:
+        float: El puntaje total acumulado (fitness). Retorna un valor muy bajo
+               (-999999) si la fecha es inválida o no hay datos (penalización).
+    """
+    # PSO trabaja con flotantes, convertimos a entero para representar días
     dia_siembra = int(solution[0])
 
-    # --- 1. RESTRICCIONES ---
+    # --- 1. VALIDACIÓN DE RESTRICCIONES (PENALIZACIÓN) ---
+    # Si el día está fuera del rango lógico de siembra (ej. fin de año)
     if dia_siembra < 1 or dia_siembra > 240:
-        return -9999  # ✔ Constante mágica está bien aquí como penalización
+        return -999999
 
-    # --- 2. OBTENER DATOS ---
+    # --- 2. OBTENCIÓN DE DATOS ---
     datos_cultivo = obtener_clima_real(dia_siembra, duracion_cultivo=120)
 
-    # ✔ PEP8: Comparar con truthiness es válido ("if not datos:")
     if not datos_cultivo:
-        return -9999
+        return -999999
 
-    score_total = 0  # ✔ Nombre en snake_case, evita abreviaturas opacas
+    score_total = 0
 
-    # --- 3. EVALUACIÓN DÍA A DÍA ---
+    # --- 3. EVALUACIÓN CON LÓGICA DIFUSA ---
     for dia in datos_cultivo:
-        temp = dia['temp']
-        lluvia = dia['lluvia']
-
         try:
-            aptitud_dia = calcular_aptitud(lluvia, temp)
-            score_total += aptitud_dia
-        except Exception:  # ⚠ PEP8: Capturar Exception genérico no es recomendado.
-            # Sugerencia: capturar excepciones específicas.
+            aptitud = calcular_aptitud(dia['lluvia'], dia['temp'])
+            score_total += aptitud
+        except Exception:
+            # ✔ PEP 8: E722 - No usar 'except' vacío.
+            # Ignoramos errores puntuales de cálculo para no detener la optimización
             pass
 
     return score_total
 
 
 def correr_optimizacion():
-    # ✔ Nombre en snake_case
-    ga_instance = pygad.GA(
-        num_generations=50,        # ✔ Comentarios concisos
-        num_parents_mating=5,
-        fitness_func=fitness_func,
-        sol_per_pop=20,
-        num_genes=1,
-        gene_type=int,
+    """
+    Configura y ejecuta la optimización por Enjambre de Partículas (PSO).
 
-        # --- RANGO INICIAL ---
-        init_range_low=1,
-        init_range_high=240,
+    Define el espacio de búsqueda (días 1-240), configura los hiperparámetros
+    del PSO (épocas, población) y genera una gráfica de convergencia al finalizar.
 
-        # ✔ Diccionario con min/max — bien formateado
-        gene_space={'low': 1, 'high': 240},
+    Returns:
+        int: El mejor día de siembra encontrado (entero).
+    """
+    print("\n--- INICIANDO OPTIMIZACIÓN CON ENJAMBRE DE PARTÍCULAS (PSO) ---")
+    print("Mecanismo: Mealpy Library (v3)")
 
-        mutation_num_genes=1,
-        # random_seed=42  # ✔ Comentado correctamente
-    )
+    # Definimos los límites usando FloatVar (Requerido por Mealpy v3)
+    limites = FloatVar(lb=[1], ub=[240], name="dia_siembra")
 
-    print("Iniciando evolución con DATOS REALES...")
-    ga_instance.run()
-    ga_instance.plot_fitness()
+    # --- A. DEFINICIÓN DEL PROBLEMA ---
+    problem_dict = {
+        "obj_func": funcion_objetivo,
+        "bounds": limites,
+        "minmax": "max",      # Buscamos maximizar la aptitud
+        "log_to": "console",  # Imprimir progreso en consola
+    }
 
-    solution, solution_fitness, _ = ga_instance.best_solution()
-    mejor_dia = int(solution[0])  # ✔ Convierte explicitamente a int
+    # --- B. CONFIGURACIÓN DEL MODELO ---
+    # epoch: Número de iteraciones (generaciones)
+    # pop_size: Número de partículas (agentes) buscando simultáneamente
+    model = PSO.OriginalPSO(epoch=50, pop_size=20)
 
-    print(f"--------------------------------------------------")
-    print(f" Optimización Completada")
-    print(f" Mejor fecha de inicio sugerida: Día {mejor_dia} del año")
-    print(f" Aptitud (Fitness) alcanzada: {solution_fitness:.2f}")
-    print(f"--------------------------------------------------")
+    # --- C. EJECUCIÓN ---
+    # solve() devuelve el mejor agente encontrado tras todas las épocas
+    best_agent = model.solve(problem_dict)
+
+    mejor_dia = int(best_agent.solution[0])
+    fitness_alcanzado = best_agent.target.fitness
+
+    # --- D. GENERACIÓN DE GRÁFICA DE CONVERGENCIA ---
+    print("\n📊 Generando gráfica de convergencia...")
+
+    # Recuperamos el historial de la mejor aptitud por época
+    historia_fitness = model.history.list_global_best_fit
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(historia_fitness, color='blue', linewidth=2, label="Mejor Aptitud Global")
+
+    plt.title('Curva de Convergencia: PSO (Mealpy)', fontsize=14)
+    plt.xlabel('Generaciones (Épocas)', fontsize=12)
+    plt.ylabel('Aptitud (Fitness)', fontsize=12)
+    plt.grid(True, linestyle='--', alpha=0.7)
+    plt.legend()
+
+    # Guardado de la imagen
+    ruta_grafica = os.path.join(parent_dir, 'convergencia_pso.png')
+    plt.savefig(ruta_grafica, dpi=300)
+    print(f"✅ Gráfica guardada en: {ruta_grafica}")
+
+    # Mostrar ventana (opcional)
+    plt.show()
+
+    # --- E. REPORTE FINAL ---
+    print("-" * 50)
+    print(" Optimización Completada (PSO)")
+    print(f" Aptitud total acumulada: {fitness_alcanzado:.2f}")
+    print("-" * 50)
 
     return mejor_dia
