@@ -12,6 +12,8 @@ import sys
 
 # --- IMPORTACIONES ---
 from src.optimization.algoritmo_genetico import correr_optimizacion
+#from src.optimization.algoritmo_pso import correr_optimizacion
+
 # Necesitamos esta función para graficar el clima del periodo ganador
 from src.neural.gestor_climatico import obtener_clima_real 
 
